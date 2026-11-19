@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clube Gisele Lourenço & DaviLiz — Plataforma de Assinantes</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#14532d" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Gisele & DaviLiz" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Playfair Display"', 'serif'],
+          },
+          colors: {
+            gisele: {
+              emerald: '#14532d',
+              sage: '#ecfdf5',
+              rose: '#be185d',
+              blush: '#fdf2f8',
+            },
+            daviliz: {
+              amber: '#f59e0b',
+              sky: '#0284c7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc;
+    }
+    .serif-title {
+      font-family: 'Playfair Display', serif;
+    }
+    .tab-active {
+      background: linear-gradient(135deg, #14532d 0%, #be185d 100%);
+      color: white;
+      box-shadow: 0 4px 14px rgba(190, 24, 93, 0.25);
+    }
+
+    /* ============================================================ */
+    /* MOTOR 3D DE PLAYBOOK INTERATIVO (PÁGINAS VIRANDO E GIRANDO)  */
+    /* ============================================================ */
+    .playbook-perspective-stage {
+      perspective: 2400px;
+      transform-style: preserve-3d;
+    }
+
+    .playbook-open-book {
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+      box-shadow:
+        0 25px 60px -15px rgba(15, 23, 42, 0.35),
+        0 4px 0 0 #e2e8f0,
+        0 8px 0 0 #cbd5e1,
+        0 12px 0 0 #94a3b8;
+    }
+
+    /* Sombra realista de lombada central no modo Folha Dupla (PC e Tablet Paisagem) */
+    .playbook-spine-center {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 36px;
+      transform: translateX(-50%);
+      background: linear-gradient(
+        90deg,
+        rgba(15, 23, 42, 0) 0%,
+        rgba(15, 23, 42, 0.10) 35%,
+        rgba(15, 23, 42, 0.26) 50%,
+        rgba(15, 23, 42, 0.10) 65%,
+        rgba(15, 23, 42, 0) 100%
+      );
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .playbook-page-sheet {
+      position: relative;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Dobra interativa do canto da página ao passar o mouse / tocar */
+    .playbook-corner-curl-right {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(315deg, rgba(15, 23, 42, 0.16) 0%, rgba(255, 255, 255, 0.92) 50%, transparent 52%);
+      border-top-left-radius: 14px;
+      box-shadow: -4px -4px 12px rgba(15, 23, 42, 0.12);
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+      z-index: 25;
+    }
+    .playbook-corner-curl-right:hover {
+      width: 68px;
+      height: 68px;
+      box-shadow: -8px -8px 20px rgba(15, 23, 42, 0.22);
+    }
+
+    .playbook-corner-curl-left {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(45deg, rgba(15, 23, 42, 0.16) 0%, rgba(255, 255, 255, 0.92) 50%, transparent 52%);
+      border-top-right-radius: 14px;
+      box-shadow: 4px -4px 12px rgba(15, 23, 42, 0.12);
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+      z-index: 25;
+    }
+    .playbook-corner-curl-left:hover {
+      width: 68px;
+      height: 68px;
+      box-shadow: 8px -8px 20px rgba(15, 23, 42, 0.22);
+    }
+
+    /* Animação 3D Realista de Folha Virando e Girando para Frente */
+    @keyframes pageTurnNext3D {
+      0% {
+        transform: perspective(2400px) rotateY(0deg) rotateZ(0deg) scale(1);
+        filter: brightness(1);
+      }
+      40% {
+        transform: perspective(2400px) rotateY(-88deg) rotateZ(-2.2deg) translateZ(45px) scale(0.98);
+        filter: brightness(0.9);
+      }
+      55% {
+        transform: perspective(2400px) rotateY(75deg) rotateZ(1.8deg) translateZ(35px) scale(0.98);
+        filter: brightness(0.94);
+      }
+      100% {
+        transform: perspective(2400px) rotateY(0deg) rotateZ(0deg) scale(1);
+        filter: brightness(1);
+      }
+    }
+
+    /* Animação 3D Realista de Folha Virando e Girando para Trás */
+    @keyframes pageTurnPrev3D {
+      0% {
+        transform: perspective(2400px) rotateY(0deg) rotateZ(0deg) scale(1);
+        filter: brightness(1);
+      }
+      40% {
+        transform: perspective(2400px) rotateY(88deg) rotateZ(2.2deg) translateZ(45px) scale(0.98);
+        filter: brightness(0.9);
+      }
+      55% {
+        transform: perspective(2400px) rotateY(-75deg) rotateZ(-1.8deg) translateZ(35px) scale(0.98);
+        filter: brightness(0.94);
+      }
+      100% {
+        transform: perspective(2400px) rotateY(0deg) rotateZ(0deg) scale(1);
+        filter: brightness(1);
+      }
+    }
+
+    /* Animação 3D Giro Completo Espacial (Páginas Virando e Girando 360°) */
+    @keyframes pageSpinRotateNext3D {
+      0% {
+        transform: perspective(2400px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1);
+      }
+      45% {
+        transform: perspective(2400px) rotateY(-180deg) rotateX(6deg) rotateZ(-3deg) scale(0.92);
+      }
+      100% {
+        transform: perspective(2400px) rotateY(-360deg) rotateX(0deg) rotateZ(0deg) scale(1);
+      }
+    }
+
+    @keyframes pageSpinRotatePrev3D {
+      0% {
+        transform: perspective(2400px) rotateY(0deg) rotateX(0deg) rotateZ(0deg) scale(1);
+      }
+      45% {
+        transform: perspective(2400px) rotateY(180deg) rotateX(-6deg) rotateZ(3deg) scale(0.92);
+      }
+      100% {
+        transform: perspective(2400px) rotateY(360deg) rotateX(0deg) rotateZ(0deg) scale(1);
+      }
+    }
+
+    /* Folha fantasma que se descola e gira sobre o eixo da lombada */
+    @keyframes leafCurlAcrossNext {
+      0% {
+        opacity: 0.96;
+        transform: rotateY(0deg) skewY(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: rotateY(-95deg) skewY(-4deg);
+      }
+      100% {
+        opacity: 0;
+        transform: rotateY(-180deg) skewY(0deg);
+      }
+    }
+
+    @keyframes leafCurlAcrossPrev {
+      0% {
+        opacity: 0.96;
+        transform: rotateY(0deg) skewY(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: rotateY(95deg) skewY(4deg);
+      }
+      100% {
+        opacity: 0;
+        transform: rotateY(180deg) skewY(0deg);
+      }
+    }
+
+    .anim-turn-next {
+      animation: pageTurnNext3D 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .anim-turn-prev {
+      animation: pageTurnPrev3D 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .anim-spin-next {
+      animation: pageSpinRotateNext3D 0.76s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .anim-spin-prev {
+      animation: pageSpinRotatePrev3D 0.76s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .turning-leaf-next {
+      transform-origin: left center;
+      animation: leafCurlAcrossNext 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .turning-leaf-prev {
+      transform-origin: right center;
+      animation: leafCurlAcrossPrev 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Temas Editoriais de Leitura Confortável */
+    .pb-theme-ivory {
+      background-color: #fdfbf7;
+      color: #1e293b;
+    }
+    .pb-theme-white {
+      background-color: #ffffff;
+      color: #0f172a;
+    }
+    .pb-theme-sepia {
+      background-color: #f4ecd8;
+      color: #2c221e;
+    }
+    .pb-theme-night {
+      background-color: #0f172a;
+      color: #f1f5f9;
+    }
+
+    /* Letra Capitular Editorial (Drop Cap) */
+    .pb-dropcap::first-letter {
+      float: left;
+      font-family: 'Playfair Display', serif;
+      font-size: 3.1rem;
+      line-height: 0.85;
+      padding-right: 0.6rem;
+      padding-top: 0.15rem;
+      font-weight: 700;
+      color: #be185d;
+    }
+    .pb-theme-night .pb-dropcap::first-letter {
+      color: #fbbf24;
+    }
+
+    /* Modo Tela Cheia Responsivo */
+    .playbook-fullscreen-active {
+      position: fixed !important;
+      inset: 0 !important;
+      z-index: 90 !important;
+      background: rgba(2, 6, 23, 0.96) !important;
+      overflow-y: auto !important;
+      padding: 0.75rem !important;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- Barra Superior Oficial Ecossistema -->
+  <div class="bg-emerald-950 text-emerald-100 text-[11px] sm:text-xs py-2 px-3 sm:px-4 border-b border-emerald-800">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-3">
+        <span class="inline-flex items-center gap-1 bg-rose-600/90 text-white px-2 py-0.5 rounded-full font-semibold shrink-0">
+          ✨ Ecossistema Unificado
+        </span>
+        <span class="leading-tight"><strong>giselelourenco.com.br</strong> (Cursos &amp; Família) + <strong>daviliz.com.br/loja</strong> (Brinquedos &amp; Educação Cristã Infantil)</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-4">
+        <span id="asaas-status-pill" class="inline-flex items-center gap-1.5 text-emerald-300 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Motor de Recorrência Asaas Ativo
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header & Navegação Principal (100% Visível sem Cortar no Celular, Tablet e PC) -->
+  <header class="bg-white/95 backdrop-blur sticky top-0 z-40 border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 space-y-2.5">
+      <!-- Linha Superior: Avatar da Autora + Marca + Botão Assinar -->
+      <div class="flex items-center justify-between gap-2 w-full">
+        <!-- Marca Unificada (Foto Oficial da Autora Gisele Lourenço) -->
+        <div class="flex items-center gap-2.5 sm:gap-3 cursor-pointer min-w-0" onclick="switchTab('landing')">
+          <div class="relative shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-2xl overflow-hidden border-2 border-emerald-700 shadow-md bg-emerald-950">
+            <img src="/images/gisele-portrait.jpg" alt="Gisele Lourenço" class="w-full h-full object-cover object-top" />
+          </div>
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span class="serif-title font-bold text-base sm:text-lg text-emerald-950 tracking-tight leading-tight">Gisele Lourenço</span>
+              <span class="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 border border-amber-300 shrink-0">&amp; Clube DaviLiz</span>
+            </div>
+            <p class="text-[11px] sm:text-xs text-slate-500 truncate mt-0.5">Plataforma de Assinantes • Ensinando Verdades Eternas</p>
+          </div>
+        </div>
+
+        <!-- Ações do Cabeçalho (Instalar App PWA, Carrinho VIP, Login/Conta, Assinar) -->
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button onclick="installPwaApp()" id="pwa-install-btn" class="bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-[11px] sm:text-xs font-extrabold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl transition flex items-center gap-1" title="Instalar Aplicativo no Celular ou Computador">
+            <span>📲</span>
+            <span class="hidden md:inline">Instalar App</span>
+          </button>
+          <button onclick="openCartModal()" class="relative bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-xl transition" title="Carrinho VIP">
+            🛍️ <span id="cart-badge-count" class="hidden absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] w-4 h-4 rounded-full items-center justify-center font-extrabold">0</span>
+          </button>
+          <button onclick="openLoginModal()" id="auth-header-btn" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 text-[11px] sm:text-xs font-bold px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl transition">
+            👤 Entrar
+          </button>
+          <button onclick="openCheckoutModal('plan_familia')" class="shrink-0 bg-rose-700 hover:bg-rose-800 text-white text-[11px] sm:text-sm font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5">
+            <span class="sm:hidden">Assinar</span>
+            <span class="hidden sm:inline">Assinar Agora</span>
+            <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Abas de Navegação (Flex-wrap para exibir 100% dos botões sem cortar em nenhuma tela) -->
+      <nav class="flex flex-wrap items-center justify-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 w-full">
+        <button id="tab-btn-landing" onclick="switchTab('landing')" class="tab-btn tab-active whitespace-nowrap px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold transition-all">
+          🌟 Planos &amp; Autora
+        </button>
+        <button id="tab-btn-playbooks" onclick="switchTab('playbooks')" class="tab-btn whitespace-nowrap px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          📖 Playbooks 3D
+        </button>
+        <button id="tab-btn-midia" onclick="switchTab('midia')" class="tab-btn whitespace-nowrap px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          🎧 Audiobooks &amp; Vídeos
+        </button>
+        <button id="tab-btn-meditacao" onclick="switchTab('meditacao')" class="tab-btn whitespace-nowrap px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          🙏 Estudos &amp; Meditação Diária
+        </button>
+        <button id="tab-btn-gisele" onclick="switchTab('gisele')" class="tab-btn whitespace-nowrap px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          👩‍🏫 Cursos Gisele
+        </button>
+        <button id="tab-btn-daviliz" onclick="switchTab('daviliz')" class="tab-btn whitespace-nowrap px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          🧸 Mundo Davi e Liz
+        </button>
+        <button id="tab-btn-loja" onclick="switchTab('loja')" class="tab-btn whitespace-nowrap px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          🛍️ Loja VIP
+        </button>
+        <button id="tab-btn-admin" onclick="switchTab('admin')" class="hidden tab-btn whitespace-nowrap px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+          💳 Pagamentos &amp; MRR
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Conteúdo Dinâmico das Abas -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-8 space-y-10">
+
+    <!-- ========================================================== -->
+    <!-- ABA 1: LANDING PAGE & PLANOS DE ASSINATURA (ASAAS)         -->
+    <!-- ========================================================== -->
+    <section id="view-landing" class="space-y-12">
+      <!-- Hero Banner -->
+      <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-rose-900 text-white p-5 sm:p-8 lg:p-12 shadow-xl">
+        <div class="grid lg:grid-cols-12 gap-6 sm:gap-8 items-center relative z-10">
+          <div class="lg:col-span-7 space-y-4 sm:space-y-5">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur px-3.5 py-1.5 rounded-full text-xs font-semibold text-rose-200 border border-white/15">
+              <span>🌱 Dois Mundos em Uma Só Assinatura</span>
+            </div>
+            <h1 class="serif-title text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight">
+              Crescimento para os Pais.<br/>
+              <span class="text-amber-300">Verdades Eternas</span> Brincando para os Filhos.
+            </h1>
+            <p class="text-emerald-100 text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl">
+              Unimos os cursos, livros e mentorias de <strong>Gisele Lourenço</strong> (<em>O Poder de Se Conhecer</em> e <em>A Arte de Relacionar-se</em>) com os recursos lúdicos e pedagógicos da <strong>DaviLiz Brinquedos</strong> (<em>Mudando as Atitudes</em>, <em>Estante Bíblica</em> e <em>Alfabeto Musicado</em>).
+            </p>
+            <div class="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
+              <button onclick="openCheckoutModal('plan_familia')" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold px-6 py-3.5 rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 text-center">
+                Quero Ser Assinante Família Plena
+              </button>
+              <button onclick="switchTab('daviliz')" class="bg-white/15 hover:bg-white/25 text-white font-semibold px-5 py-3.5 rounded-2xl border border-white/20 transition text-center">
+                Explorar Quadro Davi e Liz →
+              </button>
+            </div>
+            <div class="grid grid-cols-3 gap-2 sm:gap-4 pt-4 border-t border-white/15 text-[11px] sm:text-sm">
+              <div>
+                <div class="font-bold text-amber-300 text-base sm:text-lg">+4 Cursos</div>
+                <div class="text-emerald-200 leading-tight">Completos da Gisele Lourenço</div>
+              </div>
+              <div>
+                <div class="font-bold text-amber-300 text-base sm:text-lg">App Kids Lúdico</div>
+                <div class="text-emerald-200 leading-tight">Quadro de Atitudes + Músicas</div>
+              </div>
+              <div>
+                <div class="font-bold text-amber-300 text-base sm:text-lg">Até 30% OFF</div>
+                <div class="text-emerald-200 leading-tight">Na Loja Física DaviLiz</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Visual da Autora Gisele Lourenço & Os 2 Pilares -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex items-center gap-3.5 sm:gap-4">
+              <img src="/images/gisele-portrait.jpg" alt="Gisele Lourenço" class="w-20 h-24 sm:w-24 sm:h-28 rounded-xl object-cover object-top border-2 border-amber-300 shadow-lg shrink-0 bg-emerald-950" />
+              <div class="space-y-1 min-w-0">
+                <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-amber-300 block">Autora, Conselheira &amp; Educadora</span>
+                <h3 class="serif-title font-bold text-lg sm:text-xl text-white">Gisele Lourenço</h3>
+                <p class="text-xs text-emerald-100 leading-snug">
+                  Mestre em Aconselhamento Bíblico, Pós-graduada em Neurociência e Análise Comportamental, Doutoranda em Personalidade e Idealizadora da DaviLiz.
+                </p>
+              </div>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-rose-300">Pilar 1 • giselelourenco.com.br</span>
+                <span class="text-xs bg-rose-500/30 text-rose-100 px-2.5 py-0.5 rounded-full">Adultos &amp; Pais</span>
+              </div>
+              <h3 class="font-bold text-base">Cursos, Livros &amp; Mentoria Emocional</h3>
+              <p class="text-xs text-emerald-100 leading-relaxed">
+                Treinamentos como <em>"O Poder de Se Conhecer"</em>, <em>"A Arte de Relacionar-se"</em> e <em>"Florescendo em Meio aos Espinhos da Dor"</em>.
+              </p>
+            </div>
+
+            <div class="bg-amber-400/15 backdrop-blur-md border border-amber-300/30 rounded-2xl p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-300">Pilar 2 • daviliz.com.br/loja</span>
+                <span class="text-xs bg-amber-400/30 text-amber-100 px-2.5 py-0.5 rounded-full">Crianças &amp; EBD</span>
+              </div>
+              <h3 class="font-bold text-base text-amber-200">Clube DaviLiz: Discipulado Lúdico</h3>
+              <p class="text-xs text-emerald-100 leading-relaxed">
+                Quadro interativo <em>"Mudando as Atitudes com Davi e Liz"</em>, player do <em>Alfabeto de Versículos Musicados</em>, <em>O Evangelho para Bebês</em> e descontos na loja.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seletor de Ciclo Mensal / Anual e Cards de Planos -->
+      <div class="space-y-6">
+        <div class="text-center max-w-2xl mx-auto space-y-3">
+          <span class="text-xs font-bold uppercase tracking-widest text-sky-700 bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
+            Assinatura Recorrente via Mercado Pago ou Asaas (PIX, Cartão ou Boleto)
+          </span>
+          <h2 class="serif-title text-3xl font-bold text-slate-900">Escolha o Plano Ideal para sua Casa ou Igreja</h2>
+          <p class="text-sm text-slate-600">Cancele ou altere quando quiser. Liberação automática via Webhook Mercado Pago / Asaas.</p>
+
+          <!-- Toggle Mensal / Anual -->
+          <div class="inline-flex items-center gap-2 bg-slate-200/80 p-1.5 rounded-2xl mt-2">
+            <button id="cycle-monthly-btn" onclick="setBillingCycle('MONTHLY')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-sm transition">
+              Cobrança Mensal
+            </button>
+            <button id="cycle-yearly-btn" onclick="setBillingCycle('YEARLY')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition">
+              Anual (2 Meses Grátis 🎁)
+            </button>
+          </div>
+        </div>
+
+        <div id="plans-grid" class="grid md:grid-cols-3 gap-6">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+      <!-- ========================================================== -->
+      <!-- SEÇÃO OFICIAL: SOBRE A AUTORA, FORMAÇÃO E EXPERIÊNCIA      -->
+      <!-- ========================================================== -->
+      <div id="author-bio-section" class="bg-white rounded-3xl border border-slate-200 shadow-md overflow-hidden">
+        <!-- Renderizado via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================== -->
+    <!-- ABA DEDICADA: PLAYBOOKS INTERATIVOS 3D (PÁGINAS VIRANDO)   -->
+    <!-- ========================================================== -->
+    <section id="view-playbooks" class="hidden space-y-8">
+      <!-- Banner Principal Playbooks 3D -->
+      <div class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-rose-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <div class="inline-flex flex-wrap items-center gap-2">
+            <span class="bg-amber-400 text-slate-950 text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full">
+              📖 Leitor 3D de Playbooks • Edição Profissional
+            </span>
+            <span class="bg-white/15 border border-white/25 text-emerald-100 text-xs font-bold px-3 py-1 rounded-full">
+              📱 Celular • 📟 Tablet • 💻 PC
+            </span>
+          </div>
+          <h2 class="serif-title text-2xl sm:text-4xl font-bold leading-tight">
+            Playbooks Interativos com Páginas Virando e Girando em 3D
+          </h2>
+          <p class="text-xs sm:text-sm text-emerald-100 leading-relaxed">
+            Experiência de leitura editorial 100% responsiva (sem abrir abas de PDF estático). Folheie com efeito de giro 3D, preencha checklists e exercícios diretamente na página, ajuste o tamanho da letra, escolha o tom do papel e ouça a narração em Português do Brasil.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button onclick="openPlaybookGeneratorModal()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold px-4 py-3 rounded-2xl text-xs sm:text-sm shadow-lg transition flex items-center gap-1.5">
+            <span>✨ + Gerar Novo Playbook</span>
+          </button>
+          <button onclick="openCurrentPageEditorModal(false)" class="bg-rose-600 hover:bg-rose-500 text-white font-extrabold px-4 py-3 rounded-2xl text-xs sm:text-sm shadow transition flex items-center gap-1.5">
+            <span>✏️ Editar Página Atual</span>
+          </button>
+          <button onclick="openCurrentPageEditorModal(true)" class="bg-white/15 hover:bg-white/25 border border-white/30 text-white font-extrabold px-4 py-3 rounded-2xl text-xs sm:text-sm transition">
+            ➕ Nova Página
+          </button>
+        </div>
+      </div>
+
+      <!-- Estante Seletora Rápida de Playbooks (Capas Interativas) -->
+      <div class="bg-white rounded-3xl border border-slate-200 p-4 sm:p-5 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-800">📚 Escolha o Playbook para Folhear:</span>
+            <span id="playbook-collection-count" class="text-xs font-bold bg-emerald-50 text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200">6 obras completas</span>
+          </div>
+          <span class="text-[11px] text-slate-500 font-medium">Dica: Deslize o dedo no celular/tablet ou use as setas do teclado (← →) para virar as páginas</span>
+        </div>
+        <div id="playbook-shelf-selector" class="flex gap-3 overflow-x-auto pb-2 pt-1">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+      <!-- ========================================================== -->
+      <!-- ESTÚDIO DE LEITURA 3D RESPONSIVO (CELULAR, TABLET E PC)    -->
+      <!-- ========================================================== -->
+      <div id="playbook-reader-wrapper" class="bg-slate-900 rounded-3xl border-2 border-slate-800 shadow-2xl p-3 sm:p-6 space-y-4 transition-all">
+
+        <!-- Barra de Ferramentas Editorial & Multiplataforma -->
+        <div class="bg-slate-800/90 backdrop-blur rounded-2xl p-3 sm:p-4 border border-slate-700 flex flex-wrap items-center justify-between gap-3 text-white">
+          <!-- Título Ativo e Progresso -->
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-rose-600 flex items-center justify-center font-extrabold text-lg shrink-0 shadow">
+              📖
+            </div>
+            <div class="min-w-0">
+              <h3 id="pb-active-book-title" class="font-extrabold text-xs sm:text-base text-white truncate">Playbook: A Arte de Relacionar-se</h3>
+              <p id="pb-active-page-indicator" class="text-[11px] text-amber-300 font-bold">Páginas 1–2 de 8 • Leitura Editorial 3D</p>
+            </div>
+          </div>
+
+          <!-- Controles de Plataforma (PC / Tablet / Celular), Giro 3D, Fonte, Papel e Áudio -->
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Modo de Abertura das Páginas (Auto / 2 Páginas PC-Tablet / 1 Página 100% Celular) -->
+            <div class="inline-flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-700 text-[11px] font-bold">
+              <button id="pb-layout-auto" onclick="setPlaybookLayoutMode('auto')" class="px-2.5 py-1.5 rounded-lg bg-emerald-700 text-white transition" title="Adapta automaticamente para Celular (1 pág) ou PC/Tablet (2 págs)">
+                📱💻 Auto
+              </button>
+              <button id="pb-layout-spread" onclick="setPlaybookLayoutMode('spread')" class="px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white transition" title="Livro Aberto em Folha Dupla (2 Páginas)">
+                📖 2 Págs
+              </button>
+              <button id="pb-layout-single" onclick="setPlaybookLayoutMode('single')" class="px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white transition" title="Página Inteira 100% Aberta (Ideal para Celular e Leitura Ampliada)">
+                📄 1 Pág 100%
+              </button>
+            </div>
+
+            <!-- Estilo de Movimento 3D (Virar Folha vs Virar & Girar 3D) -->
+            <div class="inline-flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-700 text-[11px] font-bold">
+              <button id="pb-anim-flip" onclick="setPlaybookAnimationStyle('flip')" class="px-2.5 py-1.5 rounded-lg bg-rose-700 text-white transition" title="Folhear página virando em 3D">
+                📄 Virar 3D
+              </button>
+              <button id="pb-anim-spin" onclick="setPlaybookAnimationStyle('spin')" class="px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white transition" title="Virar e girar o livro em 3D">
+                🌀 Girar 3D
+              </button>
+            </div>
+
+            <!-- Controle de Tamanho da Fonte (A- / A / A+ / A++) -->
+            <div class="inline-flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-700 text-[11px] font-extrabold">
+              <button onclick="changePlaybookFontSize(-1)" class="px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition" title="Diminuir Letra">
+                A-
+              </button>
+              <span id="pb-font-label" class="px-2 text-amber-300">100%</span>
+              <button onclick="changePlaybookFontSize(1)" class="px-2.5 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition" title="Aumentar Letra para Leitura Fácil">
+                A+
+              </button>
+            </div>
+
+            <!-- Seletor de Tema Editorial (Papel Marfim, Branco, Sépia, Noturno) -->
+            <select id="pb-theme-select" onchange="setPlaybookPaperTheme(this.value)"
+              class="bg-slate-950 border border-slate-700 text-white rounded-xl px-2.5 py-1.5 text-[11px] font-bold">
+              <option value="ivory" selected>📜 Papel Marfim</option>
+              <option value="white">☀️ Branco Nitidez</option>
+              <option value="sepia">🍂 Sépia Conforto</option>
+              <option value="night">🌙 Modo Noturno</option>
+            </select>
+
+            <!-- Narração da Página Atual em Voz Neural PT-BR -->
+            <button onclick="narrateCurrentPlaybookPage('female')" class="bg-rose-700 hover:bg-rose-600 text-white font-bold px-3 py-1.5 rounded-xl text-[11px] transition flex items-center gap-1 shadow-sm" title="Ouvir esta página na voz feminina em Português do Brasil">
+              <span>👩 Ouvir Página</span>
+            </button>
+            <button onclick="narrateCurrentPlaybookPage('male')" class="bg-emerald-800 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-xl text-[11px] transition flex items-center gap-1 shadow-sm" title="Ouvir esta página na voz masculina em Português do Brasil">
+              <span>👨 Voz Masc.</span>
+            </button>
+
+            <!-- Botão Tela Cheia (Celular / Tablet / PC) -->
+            <button id="pb-fullscreen-btn" onclick="togglePlaybookFullscreen()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold px-3 py-1.5 rounded-xl text-[11px] transition">
+              ⛶ Tela Cheia
+            </button>
+          </div>
+        </div>
+
+        <!-- Palco 3D com o Livro Aberto e Folhas Virando -->
+        <div id="playbook-touch-zone" class="playbook-perspective-stage relative py-2 sm:py-4 select-none">
+          <!-- Folha 3D Animada Durante a Virada -->
+          <div id="playbook-turning-leaf" class="hidden pointer-events-none absolute inset-y-4 left-1/2 w-1/2 z-30 rounded-r-3xl bg-gradient-to-r from-amber-50 via-white to-amber-100 shadow-2xl border border-amber-200/80"></div>
+
+          <!-- Container Principal do Livro (1 Página 100% no Celular ou 2 Páginas Lado a Lado no PC/Tablet) -->
+          <div id="playbook-3d-book-container" class="playbook-open-book rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-amber-200/70 mx-auto w-full">
+            <!-- Renderizado dinamicamente via JS -->
+          </div>
+        </div>
+
+        <!-- Controles Inferiores de Navegação de Páginas & Sumário Rápido -->
+        <div class="bg-slate-800/90 rounded-2xl p-3 sm:p-4 border border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-white">
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
+            <button onclick="flipPlaybookPage(-1)" id="pb-btn-prev"
+              class="flex-1 sm:flex-initial bg-slate-700 hover:bg-slate-600 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
+              <span>↺ Página Anterior</span>
+            </button>
+            <button onclick="jumpToPlaybookPage(1)" class="bg-slate-900 hover:bg-slate-700 text-slate-300 font-bold px-3 py-2.5 rounded-xl text-xs transition" title="Voltar para a Capa">
+              Capa
+            </button>
+            <button onclick="jumpToPlaybookPage(2)" class="bg-slate-900 hover:bg-slate-700 text-amber-300 font-bold px-3 py-2.5 rounded-xl text-xs transition" title="Ir para o Sumário">
+              Sumário
+            </button>
+          </div>
+
+          <!-- Pílulas Numeradas das Páginas (Clique para girar até qualquer página) -->
+          <div id="pb-page-dots" class="flex flex-wrap items-center justify-center gap-1.5">
+            <!-- Renderizado via JS -->
+          </div>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            <button onclick="flipPlaybookPage(1)" id="pb-btn-next"
+              class="flex-1 sm:flex-initial bg-gradient-to-r from-amber-400 to-rose-500 hover:from-amber-300 hover:to-rose-400 text-slate-950 font-extrabold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-lg">
+              <span>Virar Página 3D ↻</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade Completa de Playbooks Disponíveis (Com Abertura 3D Imediata e Edição) -->
+      <div class="space-y-4 pt-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-700">Biblioteca Editorial Interativa • Sem PDFs Estáticos</span>
+            <h3 class="text-2xl font-extrabold text-slate-900">📚 Todos os Playbooks do Ecossistema Gisele Lourenço &amp; DaviLiz</h3>
+          </div>
+          <button onclick="openPlaybookGeneratorModal()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs transition shadow-sm">
+            + Criar / Gerar Novo Playbook 3D
+          </button>
+        </div>
+        <div id="playbooks-catalog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================== -->
+    <!-- ABA: AUDIOBOOKS, PLAYBOOKS / E-BOOKS & VÍDEOS              -->
+    <!-- ========================================================== -->
+    <section id="view-midia" class="hidden space-y-10">
+      <div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-rose-900 rounded-3xl p-8 text-white shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <span class="inline-block bg-amber-400/20 border border-amber-300/40 text-amber-200 text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full">
+            🎧 Estúdio de Áudio &amp; Gerador de Playbooks 3D • Gisele Lourenço &amp; DaviLiz
+          </span>
+          <h2 class="serif-title text-2xl sm:text-4xl font-bold">Central de Audiobooks, Playbooks 3D &amp; Vídeos</h2>
+          <p class="text-sm text-emerald-100">
+            Ouça os <strong>Audiobooks</strong> com narração neural, assista aos vídeos da autora e gere <strong>Playbooks Interativos 3D</strong> com páginas virando e girando para celular, tablet e PC.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2.5 shrink-0">
+          <button onclick="switchTab('playbooks')" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold px-4 py-2.5 rounded-xl text-xs shadow transition flex items-center gap-1.5">
+            <span>📖 Abrir Leitor 3D de Playbooks</span>
+          </button>
+          <button onclick="triggerQuickFilePicker('audiobook')" class="bg-rose-600 hover:bg-rose-500 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs shadow transition flex items-center gap-1.5">
+            <span>📤 Upload MP3 (Audiobook)</span>
+          </button>
+          <button onclick="openMediaEditor('video')" class="bg-white/15 hover:bg-white/25 border border-white/30 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs transition">
+            + Novo Vídeo
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================================== -->
+      <!-- CENTRAL DE UPLOAD DIRETO (COMPUTADOR OU CELULAR: MP3 & PDF)-->
+      <!-- ========================================================== -->
+      <div class="grid lg:grid-cols-2 gap-6">
+        <!-- Card 1: Upload para Alimentar Audiobook (MP3 ou PDF) -->
+        <div class="bg-white rounded-3xl border-2 border-dashed border-amber-300 hover:border-amber-500 shadow-sm p-6 space-y-4 transition">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl font-extrabold shrink-0">
+                🎧
+              </div>
+              <div>
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                  Do Computador ou Celular • MP3 ou PDF
+                </span>
+                <h3 class="font-extrabold text-base sm:text-lg text-slate-900 mt-1">Alimentar Audiobook (Upload MP3 / PDF)</h3>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Selecione um arquivo <strong>.MP3</strong> (áudio gravado) ou <strong>.PDF</strong> (texto base para leitura neural e anexo) do seu computador ou celular para criar um novo Audiobook ou atualizar um existente:
+          </p>
+
+          <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Destino no Catálogo de Audiobooks:</label>
+              <select id="quick-upload-ab-target" class="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold text-slate-800 bg-white">
+                <option value="NEW">➕ Criar Novo Audiobook com o arquivo enviado</option>
+              </select>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-2.5">
+              <input id="quick-upload-ab-title" type="text" placeholder="Título (opcional, usa nome do arquivo)"
+                class="rounded-xl border border-slate-300 px-3 py-2 bg-white text-slate-800" />
+              <input id="quick-upload-ab-audience" type="text" placeholder="Público (ex: Família, Crianças)"
+                class="rounded-xl border border-slate-300 px-3 py-2 bg-white text-slate-800" />
+            </div>
+
+            <input id="quick-file-input-audiobook" type="file" accept=".mp3,audio/*,.pdf,application/pdf" class="hidden"
+              onchange="handleQuickUpload(event, 'audiobook')" />
+
+            <div class="flex flex-wrap items-center gap-2 pt-1">
+              <button type="button" onclick="triggerQuickFilePicker('audiobook')"
+                class="flex-1 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-extrabold py-3 px-4 rounded-2xl shadow-sm transition flex items-center justify-center gap-2 text-xs sm:text-sm">
+                <span>📱💻 Carregar MP3 ou PDF para Audiobook</span>
+              </button>
+              <button type="button" onclick="openMediaEditor('audiobook')"
+                class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold py-3 px-3.5 rounded-2xl text-xs transition">
+                ⚙️ Editor Completo
+              </button>
+            </div>
+            <div id="quick-upload-ab-status" class="hidden text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl p-2.5"></div>
+          </div>
+        </div>
+
+        <!-- Card 2: Gerador Automático de Playbook 3D (A partir de Conteúdo, Arquivo ou MP3) -->
+        <div class="bg-white rounded-3xl border-2 border-dashed border-rose-300 hover:border-rose-500 shadow-sm p-6 space-y-4 transition">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-800 flex items-center justify-center text-2xl font-extrabold shrink-0">
+                📖
+              </div>
+              <div>
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
+                  Gerador de Playbook Interativo 3D • Sem Abas de PDF
+                </span>
+                <h3 class="font-extrabold text-base sm:text-lg text-slate-900 mt-1">Transformar Conteúdo ou Arquivo em Playbook 3D</h3>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Envie um arquivo do seu celular ou computador para <strong>converter automaticamente em páginas de Playbook 3D virando e girando</strong> (ou use o Gerador Editorial Profissional):
+          </p>
+
+          <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200/80 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Destino no Catálogo de Playbooks 3D:</label>
+              <select id="quick-upload-eb-target" class="w-full rounded-xl border border-slate-300 px-3 py-2 font-semibold text-slate-800 bg-white">
+                <option value="NEW">➕ Gerar Novo Playbook 3D Interativo</option>
+              </select>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-2.5">
+              <input id="quick-upload-eb-title" type="text" placeholder="Título do Playbook (opcional)"
+                class="rounded-xl border border-slate-300 px-3 py-2 bg-white text-slate-800" />
+              <input id="quick-upload-eb-audience" type="text" placeholder="Público (ex: Casais, Crianças)"
+                class="rounded-xl border border-slate-300 px-3 py-2 bg-white text-slate-800" />
+            </div>
+
+            <input id="quick-file-input-playbook" type="file" accept=".pdf,application/pdf,.mp3,audio/*" class="hidden"
+              onchange="handleQuickUpload(event, 'playbook')" />
+
+            <div class="flex flex-wrap items-center gap-2 pt-1">
+              <button type="button" onclick="openPlaybookGeneratorModal()"
+                class="flex-1 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white font-extrabold py-3 px-4 rounded-2xl shadow-sm transition flex items-center justify-center gap-2 text-xs sm:text-sm">
+                <span>✨ Gerar Playbook 3D Interativo</span>
+              </button>
+              <button type="button" onclick="triggerQuickFilePicker('playbook')"
+                class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold py-3 px-3.5 rounded-2xl text-xs transition">
+                📤 Converter Arquivo em Playbook 3D
+              </button>
+            </div>
+            <div id="quick-upload-eb-status" class="hidden text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl p-2.5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input oculto auxiliar para upload direto em um card específico -->
+      <input id="card-direct-file-input" type="file" accept=".mp3,audio/*,.pdf,application/pdf" class="hidden"
+        onchange="handleCardDirectFileSelected(event)" />
+
+      <!-- Painel de Configuração de Voz Neural PT-BR (Feminina e Masculina) -->
+      <div class="bg-white rounded-3xl border border-emerald-200 shadow-sm p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-900 text-amber-300 flex items-center justify-center font-extrabold text-lg">
+              🎙️
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Motor de Narração Profissional em Português do Brasil (pt-BR)</h3>
+                <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Dicção Bíblica Ativa</span>
+              </div>
+              <p class="text-xs text-slate-500">
+                Converte automaticamente capítulos, versículos (ex: <code>1 Coríntios 13:4-7</code> → <em>"Primeira Coríntios, capítulo 13, versículos 4 ao 7"</em>), abreviações e pontuações para leitura humana fluida.
+              </p>
+            </div>
+          </div>
+
+          <!-- Seletor Rápido: Vozes Neurais Profissionais Femininas e Masculina -->
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="neural-voice-select" onchange="setNarratorVoiceProfile(this.value)"
+              class="rounded-xl border-2 border-emerald-700 px-3 py-2 text-xs font-extrabold text-emerald-950 bg-emerald-50">
+              <option value="female_warm">👩 Narradora Ana Clara (Voz Feminina Neural Suave • pt-BR)</option>
+              <option value="male_studio">👨 Narrador Gabriel (Voz Masculina Neural Profunda • pt-BR)</option>
+              <option value="female_classic">👩 Narradora Camila (Voz Feminina Clássica Audiobook • pt-BR)</option>
+              <option value="female_kids">👧 Narradora Beatriz (Voz Feminina Infantil DaviLiz • pt-BR)</option>
+            </select>
+            <button id="voice-gender-female" onclick="setNarratorGender('female')"
+              class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-rose-700 text-white shadow-sm transition">
+              👩 Voz Feminina
+            </button>
+            <button id="voice-gender-male" onclick="setNarratorGender('male')"
+              class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              👨 Voz Masculina
+            </button>
+            <select id="voice-speed-select" onchange="setNarratorSpeed(this.value)"
+              class="rounded-xl border border-slate-300 px-3 py-2 text-xs font-bold text-slate-700 bg-white">
+              <option value="0.95">Cadência Devocional (0.95x)</option>
+              <option value="1.0" selected>Cadência Natural (1.0x)</option>
+              <option value="1.08">Cadência Dinâmica (1.08x)</option>
+            </select>
+            <button onclick="stopSpeech()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-3.5 py-2 rounded-xl text-xs transition">
+              ⏹ Parar
+            </button>
+          </div>
+        </div>
+
+        <!-- Visor do Texto Fonético Normalizado em Tempo Real -->
+        <div id="tts-live-preview" class="hidden bg-emerald-950 text-emerald-100 rounded-2xl p-4 text-xs space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span id="tts-active-voice-label" class="font-extrabold text-amber-300 uppercase tracking-wider text-[11px]">
+              🔊 Narrando agora em Português do Brasil...
+            </span>
+            <button onclick="stopSpeech()" class="text-rose-300 hover:underline font-bold text-[11px]">Encerrar leitura</button>
+          </div>
+          <p id="tts-normalized-text-display" class="text-emerald-50 italic leading-relaxed"></p>
+        </div>
+      </div>
+
+      <!-- Painel Editor Dinâmico (Oculto por padrão, abre ao clicar em Novo ou Editar) -->
+      <div id="media-editor-box" class="hidden bg-white rounded-3xl border-2 border-emerald-700 shadow-xl p-6 space-y-4">
+        <!-- Preenchido via JS -->
+      </div>
+
+      <!-- 1. Estúdio & Player de Audiobooks -->
+      <div class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-700">Escute no Carro, em Casa ou com as Crianças (Suporte a MP3 e PDF)</span>
+            <h3 class="text-2xl font-extrabold text-slate-900">🎧 Audiobooks Gisele Lourenço &amp; DaviLiz</h3>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="triggerQuickFilePicker('audiobook')" class="text-xs font-extrabold bg-amber-100 hover:bg-amber-200 text-amber-900 px-3.5 py-2 rounded-xl transition">
+              📤 Upload MP3 / PDF
+            </button>
+            <button onclick="openMediaEditor('audiobook')" class="text-xs font-bold text-emerald-800 hover:underline">+ Novo Audiobook</button>
+          </div>
+        </div>
+        <div id="audiobooks-grid" class="grid md:grid-cols-2 gap-6">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+      <!-- 2. Biblioteca de Playbooks Interativos 3D -->
+      <div class="space-y-4 pt-4 border-t border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-700">Leitura 3D com Páginas Virando e Girando (Celular, Tablet e PC)</span>
+            <h3 class="text-2xl font-extrabold text-slate-900">📖 Playbooks Interativos 3D</h3>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="switchTab('playbooks')" class="text-xs font-extrabold bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-2 rounded-xl transition shadow-sm">
+              📖 Ir para Aba Playbooks 3D
+            </button>
+            <button onclick="openPlaybookGeneratorModal()" class="text-xs font-bold text-emerald-800 hover:underline">+ Gerar Novo Playbook</button>
+          </div>
+        </div>
+        <div id="ebooks-grid" class="grid md:grid-cols-3 gap-6">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+      <!-- 3. Vídeos da Autora -->
+      <div class="space-y-4 pt-4 border-t border-slate-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Vídeos &amp; Ministrações</span>
+            <h3 class="text-2xl font-extrabold text-slate-900">🎬 Vídeos da Autora Gisele Lourenço</h3>
+          </div>
+          <button onclick="openMediaEditor('video')" class="text-xs font-bold text-emerald-800 hover:underline">+ Adicionar Vídeo</button>
+        </div>
+        <div id="videos-grid" class="grid md:grid-cols-3 gap-6">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================== -->
+    <!-- ABA NOVA: AMBIENTE DE ESTUDOS & MEDITAÇÃO DIÁRIA           -->
+    <!-- ========================================================== -->
+    <section id="view-meditacao" class="hidden space-y-8">
+      <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-8 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <span class="inline-block bg-emerald-400/20 border border-emerald-300/30 text-emerald-200 text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-full">
+            🙏 Devocional, Estudo Bíblico &amp; Caderno Pessoal Editável
+          </span>
+          <h2 class="serif-title text-2xl sm:text-4xl font-bold">Ambiente de Estudos &amp; Meditação Diária</h2>
+          <p class="text-sm text-emerald-100">
+            Meditações diárias escritas e narradas por Gisele Lourenço com perguntas de estudo, oração guiada e caderno de anotações para o assinante. Você também pode criar e editar meditações!
+          </p>
+        </div>
+        <button onclick="openMeditationEditor()" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-lg transition shrink-0">
+          + Nova Meditação / Estudo Diário
+        </button>
+      </div>
+
+      <!-- Editor de Meditação Diária (Oculto até clicar em Criar/Editar) -->
+      <div id="meditation-editor-box" class="hidden bg-white rounded-3xl border-2 border-emerald-700 shadow-xl p-6 space-y-4">
+        <!-- Preenchido via JS -->
+      </div>
+
+      <!-- Lista de Meditações e Estudos Diários -->
+      <div id="meditations-list" class="space-y-6">
+        <!-- Renderizado via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================== -->
+    <!-- ABA 2: ESPAÇO GISELE LOURENÇO (PAIS, MULHERES & MENTORIAS) -->
+    <!-- ========================================================== -->
+    <section id="view-gisele" class="hidden space-y-8">
+      <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-rose-900 rounded-3xl p-8 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-lg">
+        <div class="space-y-2 max-w-2xl">
+          <span class="text-xs uppercase tracking-widest font-bold text-rose-200">Área de Membros • Gisele Lourenço</span>
+          <h2 class="serif-title text-2xl sm:text-3xl font-bold">Formação Pessoal, Relacionamentos &amp; Família</h2>
+          <p class="text-sm text-emerald-100">
+            Assista às trilhas completas baseadas nos livros e cursos de Gisele Lourenço, baixe apostilas de reflexão e participe das mentorias.
+          </p>
+        </div>
+        <div class="bg-white/10 backdrop-blur border border-white/20 rounded-2xl p-4 text-xs space-y-1 shrink-0">
+          <div class="text-rose-200 font-bold">📅 Próxima Mentoria Ao Vivo</div>
+          <div class="font-semibold text-base text-white">"Amar do jeito que o outro precisa"</div>
+          <div class="text-emerald-200">Quinta-feira, 20h00 • Exclusivo Assinantes</div>
+        </div>
+      </div>
+
+      <!-- Grade de Cursos Gisele Lourenço -->
+      <div id="courses-grid" class="grid md:grid-cols-2 gap-6">
+        <!-- Renderizado via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================== -->
+    <!-- ABA 3: MUNDO DAVI E LIZ (QUADRO DE ATITUDES + MÚSICAS)     -->
+    <!-- ========================================================== -->
+    <section id="view-daviliz" class="hidden space-y-10">
+      <!-- Banner Mundo Davi e Liz -->
+      <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 rounded-3xl p-8 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <span class="inline-block bg-white/25 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider">
+            🧸 Clube DaviLiz • Ensinando Verdades Eternas Brincando
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold">Espaço Interativo Infantil &amp; Devocional no Lar</h2>
+          <p class="text-sm text-amber-50">
+            Use o Quadro Digital <strong>Mudando as Atitudes com Davi e Liz</strong>, cante o <strong>Alfabeto de Versículos Musicados</strong> e explore a <strong>Estante Bíblica</strong> com seus filhos!
+          </p>
+        </div>
+        <div class="bg-white text-slate-900 rounded-2xl px-6 py-4 shadow-md text-center shrink-0">
+          <div class="text-xs font-bold text-slate-500 uppercase">Estrelas de Atitudes</div>
+          <div id="kids-total-stars" class="text-3xl font-extrabold text-amber-500 mt-1">⭐ 42</div>
+          <div id="kids-child-name" class="text-xs font-semibold text-emerald-700 mt-0.5">Pedro (6 anos) • 5 dias seguidos</div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-8">
+        <!-- Coluna 1: Quadro Gamificado "Mudando as Atitudes com Davi e Liz" -->
+        <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+            <div>
+              <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Inspirado no Livro Oficial DaviLiz</span>
+              <h3 class="text-xl font-extrabold text-slate-900">Quadro Digital: Mudando as Atitudes</h3>
+            </div>
+            <span class="text-xs bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-full">
+              Clique para marcar o dia!
+            </span>
+          </div>
+
+          <div id="attitudes-list" class="space-y-3">
+            <!-- Renderizado via JS -->
+          </div>
+
+          <!-- Adicionar Nova Atitude -->
+          <form onsubmit="handleAddAttitude(event)" class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-2">
+            <input id="new-att-title" type="text" placeholder="Nova atitude (ex: Orar pelos avós, Arrumar a cama...)" required
+              class="flex-1 rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+            <input id="new-att-verse" type="text" placeholder="Versículo (ex: Salmos 23:1)"
+              class="sm:w-44 rounded-xl border border-slate-300 px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+            <button type="submit" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-4 py-2 rounded-xl text-sm transition shrink-0">
+              + Adicionar
+            </button>
+          </form>
+        </div>
+
+        <!-- Coluna 2: Player Musical "Alfabeto de Versículos Musicados" -->
+        <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-5 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="border-b border-slate-100 pb-4">
+              <span class="text-xs font-bold text-rose-700 uppercase tracking-wider">Recurso Musical Interativo</span>
+              <h3 class="text-xl font-extrabold text-slate-900">🎵 Alfabeto de Versículos Musicados</h3>
+              <p class="text-xs text-slate-500 mt-1">Clique em uma letra para tocar a melodia e memorizar o versículo com a criança!</p>
+            </div>
+
+            <!-- Botões das Letras -->
+            <div id="alphabet-buttons" class="grid grid-cols-4 gap-2.5">
+              <!-- Renderizado via JS -->
+            </div>
+
+            <!-- Visor do Versículo Tocando -->
+            <div id="alphabet-display" class="bg-gradient-to-br from-amber-50 to-rose-50 border border-amber-200 rounded-2xl p-5 text-center space-y-2">
+              <div id="alpha-current-letter" class="w-12 h-12 rounded-2xl bg-amber-400 text-slate-950 font-extrabold text-2xl flex items-center justify-center mx-auto shadow">
+                A
+              </div>
+              <div id="alpha-current-theme" class="text-xs font-bold uppercase tracking-wider text-rose-700">Amor a Deus</div>
+              <p id="alpha-current-verse" class="serif-title text-lg font-bold text-slate-900">
+                "Amarás o Senhor teu Deus de todo o teu coração."
+              </p>
+              <div id="alpha-current-ref" class="text-xs font-semibold text-emerald-800">Mateus 22:37</div>
+            </div>
+          </div>
+
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-xs text-emerald-900 flex items-center justify-between">
+            <div>
+              <strong>👶 Devocional: O Evangelho para Bebês</strong>
+              <p class="text-emerald-700">Áudio-devocional suave de 3 minutos para hora do sono.</p>
+            </div>
+            <button onclick="playBabyLullaby()" class="bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-3.5 py-2 rounded-xl shrink-0">
+              ▶ Ouvir Melodia
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Estante Bíblica Digital Interativa + Imprimíveis PDF -->
+      <div class="grid lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+          <div>
+            <span class="text-xs font-bold text-sky-700 uppercase tracking-wider">Versão Digital do Brinquedo DaviLiz</span>
+            <h3 class="text-xl font-extrabold text-slate-900">📚 Estante Bíblica Interativa</h3>
+            <p class="text-xs text-slate-500">Explore as divisões da Bíblia com as crianças.</p>
+          </div>
+          <div id="bookshelf-container" class="space-y-3">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+          <div>
+            <span class="text-xs font-bold text-purple-700 uppercase tracking-wider">Central de Playbooks Semanais 3D</span>
+            <h3 class="text-xl font-extrabold text-slate-900">📖 Playbooks &amp; Atividades Interativas</h3>
+            <p class="text-xs text-slate-500">Abra no leitor 3D com páginas virando no celular, tablet ou PC.</p>
+          </div>
+          <div id="printables-list" class="space-y-2.5">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================== -->
+    <!-- ABA 4: LOJA VIP ASSINANTES (DAVILIZ & LIVROS GISELE)       -->
+    <!-- ========================================================== -->
+    <section id="view-loja" class="hidden space-y-8">
+      <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <span class="text-xs font-bold uppercase tracking-wider text-rose-700 bg-rose-50 px-3 py-1 rounded-full border border-rose-200">
+            Catálogo Oficial Integrado • daviliz.com.br/loja &amp; giselelourenco.com.br
+          </span>
+          <h2 class="serif-title text-2xl sm:text-3xl font-bold text-slate-900">Loja Física com Benefício Exclusivo de Assinante</h2>
+          <p class="text-sm text-slate-600">
+            Assinantes ativos recebem desconto automático em todos os brinquedos pedagógicos e livros físicos. Simule seu nível de desconto abaixo:
+          </p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2 shrink-0 w-full md:w-auto">
+          <label class="block text-xs font-bold text-slate-600 uppercase">Simular Desconto do Plano:</label>
+          <select id="shop-discount-select" onchange="renderShop()" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-bold text-emerald-900 bg-white">
+            <option value="10">Plano Essencial (10% OFF)</option>
+            <option value="20" selected>Plano Família Plena (20% OFF VIP)</option>
+            <option value="30">Plano Ministério Infantil (30% OFF Atacado)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="shop-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Renderizado via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================== -->
+    <!-- ABA 5: PAINEL ADMIN SAAS & INTEGRAÇÃO ASAAS RECORRÊNCIA    -->
+    <!-- ========================================================== -->
+    <section id="view-admin" class="hidden space-y-8">
+      <div class="bg-slate-900 text-white rounded-3xl p-8 shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 bg-sky-500/20 text-sky-300 px-3 py-1 rounded-full text-xs font-bold border border-sky-500/30">
+            ⚡ Integração Nativa: Mercado Pago &amp; Asaas API v3
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold">Painel de Controle SaaS &amp; Motor Financeiro</h2>
+          <p class="text-sm text-slate-300 max-w-2xl">
+            Acompanhe a Receita Recorrente Mensal (MRR), assinantes ativos, cobranças PIX/Cartão/Boleto no <strong>Mercado Pago</strong> ou <strong>Asaas</strong> e dispare eventos de Webhook em tempo real.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2.5">
+          <button onclick="simulateWebhook('PAYMENT_CONFIRMED', null, 'MERCADOPAGO')" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition">
+            💙 Simular Webhook Mercado Pago
+          </button>
+          <button onclick="simulateWebhook('PAYMENT_CONFIRMED', null, 'ASAAS')" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition">
+            ⚡ Simular Webhook Asaas
+          </button>
+          <button onclick="simulateWebhook('PAYMENT_OVERDUE', null, 'ASAAS')" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition">
+            ⚠️ Simular Vencimento
+          </button>
+        </div>
+      </div>
+
+      <!-- Cards de Métricas SaaS (MRR, ARR, Assinantes) -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div class="text-xs font-bold uppercase text-slate-400">MRR (Receita Recorrente Mensal)</div>
+          <div id="metric-mrr" class="text-3xl font-extrabold text-emerald-800 mt-2">R$ 0,00</div>
+          <div class="text-xs text-emerald-600 font-semibold mt-1">Cobranças automáticas via Asaas</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div class="text-xs font-bold uppercase text-slate-400">ARR (Receita Anual Projetada)</div>
+          <div id="metric-arr" class="text-3xl font-extrabold text-slate-900 mt-2">R$ 0,00</div>
+          <div class="text-xs text-slate-500 mt-1">Projeção de 12 meses</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div class="text-xs font-bold uppercase text-slate-400">Assinantes Ativos</div>
+          <div id="metric-active" class="text-3xl font-extrabold text-rose-700 mt-2">0</div>
+          <div class="text-xs text-slate-500 mt-1">Acesso liberado na plataforma</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+          <div class="text-xs font-bold uppercase text-slate-400">Pendentes / Aguardando PIX</div>
+          <div id="metric-pending" class="text-3xl font-extrabold text-amber-600 mt-2">0</div>
+          <div class="text-xs text-slate-500 mt-1">Aguardando Webhook Asaas</div>
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-8">
+        <!-- Tabela de Assinantes Asaas -->
+        <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4 overflow-x-auto">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-extrabold text-slate-900">Assinantes Sincronizados com o Asaas</h3>
+            <button onclick="openCheckoutModal('plan_familia')" class="text-xs font-bold text-rose-700 hover:underline">
+              + Nova Assinatura Teste
+            </button>
+          </div>
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-400 uppercase text-xs">
+                <th class="py-2.5 pr-3">Assinante</th>
+                <th class="py-2.5 px-3">Plano</th>
+                <th class="py-2.5 px-3">Forma / Valor</th>
+                <th class="py-2.5 px-3">ID Asaas</th>
+                <th class="py-2.5 pl-3">Status</th>
+              </tr>
+            </thead>
+            <tbody id="subscribers-table-body" class="divide-y divide-slate-100">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Configuração da API Asaas & Log de Webhooks -->
+        <div class="lg:col-span-5 space-y-6">
+          <!-- Configurar Chave API Mercado Pago -->
+          <div class="bg-white rounded-3xl border-2 border-sky-200 shadow-sm p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900">💙 Credenciais API Mercado Pago</h3>
+              <span id="mp-mode-badge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                Modo Simulação
+              </span>
+            </div>
+            <p class="text-xs text-slate-500">
+              Cole seu <code>Access Token</code> do Mercado Pago (<code>APP_USR-...</code> ou <code>TEST-...</code>) para processar PIX, Cartão e Assinaturas Recorrentes reais.
+            </p>
+            <form onsubmit="handleSaveMercadoPagoConfig(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Ambiente Mercado Pago</label>
+                <select id="cfg-mp-env" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                  <option value="sandbox">Sandbox / Testes (Credenciais TEST-...)</option>
+                  <option value="production">Produção (Credenciais APP_USR-...)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Access Token (Mercado Pago)</label>
+                <input id="cfg-mp-token" type="password" placeholder="APP_USR-1234567890..."
+                  class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-sky-600" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Public Key (Opcional)</label>
+                <input id="cfg-mp-public-key" type="text" placeholder="APP_USR-abcdef..."
+                  class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-sky-600" />
+              </div>
+              <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                Salvar Configuração Mercado Pago
+              </button>
+            </form>
+          </div>
+
+          <!-- Configurar Chave API Asaas -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900">🔑 Credenciais da API Asaas</h3>
+              <span id="asaas-mode-badge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                Modo Simulação
+              </span>
+            </div>
+            <p class="text-xs text-slate-500">
+              Cole sua chave de API do Asaas (<code>$aact_...</code>) para criar clientes e assinaturas reais no Sandbox ou Produção, ou deixe em branco para usar o simulador integrado.
+            </p>
+            <form onsubmit="handleSaveAsaasConfig(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Ambiente Asaas</label>
+                <select id="cfg-asaas-env" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-semibold">
+                  <option value="sandbox">Sandbox (https://sandbox.asaas.com/api/v3)</option>
+                  <option value="production">Produção (https://api.asaas.com/v3)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Chave de API Asaas (access_token)</label>
+                <input id="cfg-asaas-key" type="password" placeholder="$aact_YTU5YTE0M2M2N2I4..."
+                  class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+              </div>
+              <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                Salvar Configuração Asaas
+              </button>
+            </form>
+          </div>
+
+          <!-- Log de Webhooks Recebidos -->
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900">📡 Eventos de Webhook (/api/asaas/webhook)</h3>
+              <span class="text-xs text-emerald-700 font-semibold">Tempo Real</span>
+            </div>
+            <div id="webhook-logs-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+              <!-- Renderizado via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================== -->
+  <!-- MODAL DE CHECKOUT TRANSPARENTE ASAAS                       -->
+  <!-- ========================================================== -->
+  <div id="checkout-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+        <div>
+          <span id="checkout-gateway-subtitle" class="text-xs font-bold uppercase tracking-wider text-sky-700">Checkout Transparente Recorrente • Mercado Pago</span>
+          <h3 id="modal-plan-title" class="text-xl font-extrabold text-slate-900 mt-0.5">Família Plena (Gisele + DaviLiz)</h3>
+          <p id="modal-plan-price" class="text-sm font-bold text-rose-700">R$ 69,90 / mês</p>
+        </div>
+        <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold px-2">✕</button>
+      </div>
+
+      <!-- Formulário de Assinatura -->
+      <form id="checkout-form" onsubmit="handleSubmitSubscription(event)" class="space-y-4">
+        <input type="hidden" id="checkout-plan-id" value="plan_familia" />
+
+        <!-- Seleção do Gateway de Pagamento (Mercado Pago ou Asaas) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Processador de Pagamento</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" onclick="selectPaymentGateway('MERCADOPAGO')" id="gw-btn-MERCADOPAGO"
+              class="border-2 border-sky-600 bg-sky-50 text-sky-950 font-extrabold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+              <span>💙 Mercado Pago</span>
+            </button>
+            <button type="button" onclick="selectPaymentGateway('ASAAS')" id="gw-btn-ASAAS"
+              class="border border-slate-200 text-slate-600 font-bold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+              <span>💚 Asaas</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nome Completo do Assinante</label>
+          <input id="cust-name" type="text" required placeholder="Ex: Maria Clara Oliveira"
+            class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">E-mail de Acesso</label>
+            <input id="cust-email" type="email" required placeholder="maria@email.com"
+              class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">CPF ou CNPJ</label>
+            <input id="cust-cpf" type="text" required placeholder="123.456.789-00"
+              class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp / Celular</label>
+            <input id="cust-phone" type="tel" required placeholder="(85) 99999-9999"
+              class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Crie sua Senha de Acesso</label>
+            <input id="cust-password" type="password" required minlength="4" placeholder="Mínimo 4 caracteres"
+              class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+          </div>
+        </div>
+
+        <!-- Seleção da Forma de Pagamento no Asaas -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Forma de Pagamento Recorrente (Asaas)</label>
+          <div class="grid grid-cols-3 gap-2.5">
+            <button type="button" onclick="selectPaymentMethod('PIX')" id="pay-btn-PIX"
+              class="pay-method-btn border-2 border-emerald-700 bg-emerald-50 text-emerald-950 font-bold py-2.5 px-3 rounded-xl text-xs flex flex-col items-center gap-1">
+              <span>⚡ PIX Automático</span>
+              <span class="text-[10px] text-emerald-700">Liberação Imediata</span>
+            </button>
+            <button type="button" onclick="selectPaymentMethod('CREDIT_CARD')" id="pay-btn-CREDIT_CARD"
+              class="pay-method-btn border border-slate-200 text-slate-600 font-bold py-2.5 px-3 rounded-xl text-xs flex flex-col items-center gap-1">
+              <span>💳 Cartão Crédito</span>
+              <span class="text-[10px] text-slate-400">Recorrência Mensal</span>
+            </button>
+            <button type="button" onclick="selectPaymentMethod('BOLETO')" id="pay-btn-BOLETO"
+              class="pay-method-btn border border-slate-200 text-slate-600 font-bold py-2.5 px-3 rounded-xl text-xs flex flex-col items-center gap-1">
+              <span>📄 Boleto + PIX</span>
+              <span class="text-[10px] text-slate-400">Vencimento Mensal</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Campos extras caso Cartão de Crédito -->
+        <div id="credit-card-fields" class="hidden bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+          <div class="text-xs font-bold text-slate-700">Dados do Cartão (Tokenizado via Asaas)</div>
+          <input id="cc-number" type="text" placeholder="Número do Cartão (ex: 5555 4444 3333 2222)"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white" />
+          <div class="grid grid-cols-3 gap-2">
+            <input id="cc-month" type="text" placeholder="Mês (12)" class="rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white" />
+            <input id="cc-year" type="text" placeholder="Ano (2029)" class="rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white" />
+            <input id="cc-ccv" type="text" placeholder="CVV (123)" class="rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <input id="cc-postal" type="text" placeholder="CEP do titular (ex: 60000-000)" class="rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white" />
+            <input id="cc-address-num" type="text" placeholder="Nº da residência (ex: 120)" class="rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white" />
+          </div>
+        </div>
+
+        <label class="flex items-start gap-2 text-[11px] text-slate-600 cursor-pointer">
+          <input type="checkbox" required checked class="mt-0.5 rounded border-slate-300 text-emerald-700" />
+          <span>Li e concordo com os <button type="button" onclick="openLegalModal('terms')" class="text-emerald-800 font-bold underline">Termos de Uso</button> e a <button type="button" onclick="openLegalModal('privacy')" class="text-emerald-800 font-bold underline">Política de Privacidade (LGPD)</button>.</span>
+        </label>
+
+        <button type="submit" id="checkout-submit-btn"
+          class="w-full bg-gradient-to-r from-sky-600 to-emerald-700 hover:from-sky-700 hover:to-emerald-800 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-sm">
+          Gerar Assinatura no Mercado Pago →
+        </button>
+      </form>
+
+      <!-- Resultado da Cobrança Gerada (PIX QR Code / Confirmação) -->
+      <div id="checkout-result" class="hidden bg-emerald-50 border border-emerald-200 rounded-2xl p-5 space-y-4 text-center">
+        <!-- Preenchido dinamicamente -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MODAL EDITOR E GERADOR PROFISSIONAL DE PÁGINAS DO PLAYBOOK -->
+  <!-- ========================================================== -->
+  <div id="playbook-page-editor-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-6">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200">
+      <div class="px-6 py-4 bg-gradient-to-r from-emerald-950 via-emerald-900 to-rose-900 text-white flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">📖</span>
+          <div>
+            <h4 id="pb-modal-title" class="font-extrabold text-sm sm:text-lg">Editor Editorial de Página do Playbook</h4>
+            <p id="pb-modal-subtitle" class="text-[11px] text-emerald-100">Edição profissional de conteúdo, versículo, checklist e exercício prático</p>
+          </div>
+        </div>
+        <button onclick="closePlaybookModal()" class="bg-white/15 hover:bg-white/25 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition">
+          ✕ Fechar
+        </button>
+      </div>
+      <div id="playbook-modal-body" class="p-6 overflow-y-auto space-y-4 text-xs">
+        <!-- Preenchido via JS (Editor de Página ou Gerador Completo de Playbook) -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Player Flutuante de Estúdio Neural PT-BR (Aparece em qualquer aba ao narrar Playbooks, Audiobooks ou Estudos) -->
+  <div id="global-neural-player" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-4xl bg-emerald-950/95 backdrop-blur-md text-white rounded-3xl border-2 border-amber-400/60 shadow-2xl p-4">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div class="space-y-1 flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+          <span id="global-player-voice-name" class="text-xs font-extrabold uppercase tracking-wider text-amber-300">
+            🎙️ Estúdio Neural PT-BR
+          </span>
+        </div>
+        <p id="global-player-text" class="text-xs text-emerald-100 italic line-clamp-2"></p>
+      </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+        <audio id="global-neural-audio-el" controls class="h-9 w-full sm:w-64 rounded-xl"></audio>
+        <button onclick="stopSpeech()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-2 rounded-xl text-xs shrink-0">
+          ✕ Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Login / Minha Conta (Assinante & Admin) -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-5">
+      <div class="flex items-start justify-between border-b border-slate-100 pb-3">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Área de Membros</span>
+          <h3 id="login-modal-title" class="text-xl font-extrabold text-slate-900">Entrar no Clube</h3>
+        </div>
+        <button onclick="closeLoginModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold px-2">✕</button>
+      </div>
+
+      <div id="login-account-panel" class="hidden space-y-4">
+        <!-- Preenchido via JS quando logado -->
+      </div>
+
+      <form id="login-form" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">E-mail</label>
+          <input id="login-email" type="email" required placeholder="seu@email.com"
+            class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Senha</label>
+          <input id="login-password" type="password" required placeholder="••••••••"
+            class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+        </div>
+        <button type="submit" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white font-extrabold py-3 rounded-2xl text-sm transition">
+          Entrar na Plataforma →
+        </button>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-[11px] text-slate-600 space-y-1">
+          <div class="font-bold text-slate-800">Contas de Demonstração Rápida:</div>
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            <button type="button" onclick="fillDemoLogin('subscriber')" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold px-2.5 py-1 rounded-lg">
+              👩 Assinante Demo
+            </button>
+            <button type="button" onclick="fillDemoLogin('admin')" class="bg-rose-100 hover:bg-rose-200 text-rose-900 font-bold px-2.5 py-1 rounded-lg">
+              👑 Super Admin
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Player Real de Curso Gisele Lourenço -->
+  <div id="course-player-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-6">
+    <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200">
+      <div class="px-6 py-4 bg-gradient-to-r from-emerald-950 via-emerald-900 to-rose-900 text-white flex items-center justify-between gap-3">
+        <div>
+          <span id="course-modal-badge" class="text-[11px] font-bold uppercase tracking-wider text-amber-300">Curso Completo</span>
+          <h4 id="course-modal-title" class="serif-title font-bold text-lg sm:text-xl">Título do Curso</h4>
+        </div>
+        <button onclick="closeCourseModal()" class="bg-white/15 hover:bg-white/25 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition">✕ Fechar</button>
+      </div>
+      <div id="course-modal-body" class="p-5 sm:p-6 overflow-y-auto space-y-5">
+        <!-- Preenchido via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Carrinho VIP Loja DaviLiz -->
+  <div id="cart-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-rose-700">Benefício VIP de Assinante</span>
+          <h3 class="text-xl font-extrabold text-slate-900">🛍️ Meu Carrinho DaviLiz</h3>
+        </div>
+        <button onclick="closeCartModal()" class="text-slate-400 hover:text-slate-700 text-xl font-bold px-2">✕</button>
+      </div>
+      <div id="cart-items-body" class="flex-1 overflow-y-auto space-y-3 text-xs">
+        <!-- Preenchido via JS -->
+      </div>
+      <div id="cart-footer" class="border-t border-slate-100 pt-4 space-y-3">
+        <!-- Preenchido via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Legal (Termos de Uso & Privacidade LGPD) -->
+  <div id="legal-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 id="legal-modal-title" class="text-lg font-extrabold text-slate-900">Termos de Uso</h3>
+        <button onclick="document.getElementById('legal-modal').classList.add('hidden');document.getElementById('legal-modal').classList.remove('flex');" class="text-slate-400 hover:text-slate-700 text-xl font-bold px-2">✕</button>
+      </div>
+      <div id="legal-modal-body" class="text-xs sm:text-sm text-slate-600 space-y-3 leading-relaxed"></div>
+    </div>
+  </div>
+
+  <!-- Container Global de Notificações Toast -->
+  <div id="toast-container" class="fixed top-20 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- Rodapé -->
+  <footer class="bg-white border-t border-slate-200 py-6 px-4 text-xs text-slate-500 mt-12">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <strong>Clube Gisele Lourenço &amp; DaviLiz Brinquedos</strong> • Fortaleza, CE • contato@giselelourenco.com.br | contato@daviliz.com.br
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button onclick="openLegalModal('terms')" class="hover:text-emerald-800 underline">Termos de Uso</button>
+        <button onclick="openLegalModal('privacy')" class="hover:text-emerald-800 underline">Política de Privacidade (LGPD)</button>
+        <span>Pagamentos via <strong>Asaas</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- PDF.js para leitura e extração automática de texto de PDFs enviados no computador ou celular -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+  </script>
+  <script src="/app.js"></script>
+</body>
+</html>

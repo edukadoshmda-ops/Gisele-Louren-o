@@ -1,0 +1,26 @@
+{
+  "name": "Clube Gisele Lourenço & DaviLiz",
+  "short_name": "Gisele & DaviLiz",
+  "description": "Plataforma de Assinantes: Cursos, Playbooks 3D, Audiobooks, Meditação Diária e Clube Infantil DaviLiz.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#064e3b",
+  "theme_color": "#14532d",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

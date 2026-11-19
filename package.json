@@ -1,0 +1,20 @@
+{
+  "name": "clube-gisele-daviliz-saas",
+  "version": "1.0.0",
+  "description": "Plataforma SaaS de Assinantes - Ecossistema Gisele Lourenço & DaviLiz Brinquedos integrado ao Asaas",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "gisele-lourenco",
+    "daviliz",
+    "saas",
+    "asaas",
+    "assinaturas",
+    "educacao-crista"
+  ],
+  "author": "Ecossistema Gisele Lourenço & DaviLiz",
+  "license": "Proprietary"
+}
