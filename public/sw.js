@@ -1,5 +1,5 @@
-const CACHE_NAME = "clube-gisele-daviliz-v1";
-const APP_SHELL = ["/", "/index.html", "/app.js", "/manifest.json", "/icons/icon-192.png", "/icons/icon-512.png"];
+const CACHE_NAME = "clube-gisele-daviliz-v4";
+const APP_SHELL = ["/", "/index.html", "/app.js", "/manifest.json", "/images/logo-gisele-daviliz.jpg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

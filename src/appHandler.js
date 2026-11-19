@@ -953,10 +953,12 @@ async function handleRequest(req, res) {
         return fs.createReadStream(fullPath, { start, end }).pipe(res);
       }
 
+      const noCache = [".html", ".js", ".json"].includes(ext) ? "no-cache, no-store, must-revalidate" : "public, max-age=3600";
       res.writeHead(200, {
         "Content-Type": contentType,
         "Content-Length": stat.size,
-        "Accept-Ranges": "bytes"
+        "Accept-Ranges": "bytes",
+        "Cache-Control": noCache
       });
       return fs.createReadStream(fullPath).pipe(res);
     }

@@ -210,7 +210,7 @@ function renderAuthorBio() {
       <div class="lg:col-span-7 p-8 sm:p-10 space-y-6">
         <div class="space-y-3">
           <div class="flex flex-wrap items-center gap-3">
-            <img src="${author.logoUrl}" alt="Logo Gisele Lourenço" class="h-9 w-auto object-contain" />
+            <img src="/images/logo-gisele-daviliz.jpg" alt="Logo Gisele Lourenço & Clube DaviLiz" class="h-12 w-12 rounded-xl object-cover border border-amber-400/80 shadow-sm" />
             <img src="${author.davilizLogoUrl}" alt="Logo DaviLiz" class="h-9 w-auto object-contain" />
           </div>
           <h2 class="serif-title text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
@@ -4014,4 +4014,169 @@ async function installPwaApp() {
   } else {
     alert(msg);
   }
+}
+
+// =========================================================================
+// MOTOR DE ÍCONES MODERNOS FUTURISTAS (LUCIDE VECTOR ICONS)
+// =========================================================================
+const EMOJI_TO_LUCIDE = {
+  "🌟": "sparkles",
+  "✨": "sparkles",
+  "📖": "book-open-check",
+  "📚": "library",
+  "📘": "book-marked",
+  "🎧": "headphones",
+  "🎙️": "mic",
+  "🎬": "film",
+  "🙏": "flame",
+  "👩‍🏫": "graduation-cap",
+  "🎓": "graduation-cap",
+  "🧸": "gamepad-2",
+  "🛍️": "shopping-bag",
+  "💳": "credit-card",
+  "📲": "smartphone",
+  "📱": "smartphone",
+  "💻": "monitor",
+  "📟": "tablet",
+  "👤": "user-round",
+  "👑": "crown",
+  "🔑": "key-round",
+  "⚡": "zap",
+  "💙": "shield-check",
+  "💚": "shield-check",
+  "🌱": "sprout",
+  "🎁": "gift",
+  "⭐": "star",
+  "🎵": "music",
+  "🔊": "volume-2",
+  "👩": "user-round",
+  "👨": "user-round-check",
+  "👧": "smile",
+  "👶": "baby",
+  "⏹": "square",
+  "▶️": "play",
+  "▶": "play",
+  "✏️": "pen-line",
+  "🗑️": "trash-2",
+  "💾": "save",
+  "📤": "upload-cloud",
+  "⬇": "download",
+  "👁️": "eye",
+  "⚙️": "settings",
+  "➕": "plus-circle",
+  "🔄": "refresh-cw",
+  "⏳": "loader",
+  "✅": "check-circle-2",
+  "✔": "check",
+  "❌": "x-circle",
+  "⚠️": "alert-triangle",
+  "📅": "calendar",
+  "⏱": "clock",
+  "📄": "file-text",
+  "📑": "list-tree",
+  "✍️": "pen-tool",
+  "📓": "notebook-pen",
+  "💡": "lightbulb",
+  "🧠": "brain-circuit",
+  "🎯": "target",
+  "🏆": "trophy",
+  "📌": "pin",
+  "🔗": "link-2",
+  "📡": "radio",
+  "🚀": "rocket",
+  "🖨️": "printer",
+  "🌀": "orbit",
+  "⛶": "maximize-2",
+  "☀️": "sun",
+  "🌙": "moon",
+  "🍂": "feather",
+  "📜": "scroll-text",
+  "🌿": "leaf",
+  "🔒": "lock",
+  "🔓": "unlock"
+};
+
+const EMOJI_KEYS_SORTED = Object.keys(EMOJI_TO_LUCIDE).sort((a, b) => b.length - a.length);
+const EMOJI_REGEX = new RegExp(
+  EMOJI_KEYS_SORTED.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
+  "g"
+);
+
+let iconUpgradeScheduled = false;
+
+function upgradeEmojisToFuturisticIcons(root = document.body) {
+  if (!root) return;
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent) return NodeFilter.FILTER_REJECT;
+      const tag = parent.tagName;
+      if (["SCRIPT", "STYLE", "TEXTAREA", "INPUT", "OPTION", "SELECT", "CODE", "PRE"].includes(tag)) {
+        return NodeFilter.FILTER_REJECT;
+      }
+      if (!node.nodeValue || !EMOJI_REGEX.test(node.nodeValue)) {
+        EMOJI_REGEX.lastIndex = 0;
+        return NodeFilter.FILTER_REJECT;
+      }
+      EMOJI_REGEX.lastIndex = 0;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const nodesToReplace = [];
+  let current;
+  while ((current = walker.nextNode())) {
+    nodesToReplace.push(current);
+  }
+
+  nodesToReplace.forEach((textNode) => {
+    const text = textNode.nodeValue;
+    const frag = document.createDocumentFragment();
+    let lastIdx = 0;
+    EMOJI_REGEX.lastIndex = 0;
+    let match;
+    while ((match = EMOJI_REGEX.exec(text)) !== null) {
+      if (match.index > lastIdx) {
+        frag.appendChild(document.createTextNode(text.slice(lastIdx, match.index)));
+      }
+      const iconName = EMOJI_TO_LUCIDE[match[0]] || "sparkles";
+      const iEl = document.createElement("i");
+      iEl.setAttribute("data-lucide", iconName);
+      iEl.className = "w-[1.05em] h-[1.05em] inline-block align-[-0.18em]";
+      frag.appendChild(iEl);
+      lastIdx = match.index + match[0].length;
+    }
+    if (lastIdx < text.length) {
+      frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+    }
+    if (textNode.parentNode) {
+      textNode.parentNode.replaceChild(frag, textNode);
+    }
+  });
+
+  if (typeof window.renderFuturisticIcons === "function") {
+    window.renderFuturisticIcons(root);
+  }
+}
+
+function scheduleFuturisticIconRefresh() {
+  if (iconUpgradeScheduled) return;
+  iconUpgradeScheduled = true;
+  requestAnimationFrame(() => {
+    iconUpgradeScheduled = false;
+    upgradeEmojisToFuturisticIcons(document.body);
+  });
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("DOMContentLoaded", () => {
+    upgradeEmojisToFuturisticIcons(document.body);
+    const observer = new MutationObserver(() => {
+      scheduleFuturisticIconRefresh();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  });
+  window.addEventListener("load", () => {
+    upgradeEmojisToFuturisticIcons(document.body);
+  });
 }

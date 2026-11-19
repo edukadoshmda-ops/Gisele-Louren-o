@@ -14,7 +14,7 @@ const initialData = {
     photoSpeakingUrl: "/images/gisele-curso1.jpg",
     photoFlorescendoUrl: "/images/gisele-florescendo.png",
     photoCursoUrl: "/images/gisele-curso1.jpg",
-    logoUrl: "https://giselelourenco.com.br/wp-content/uploads/2026/02/cropped-Logo-Verde-Rosa-1000x-CURVA-Gisele-Louranco-24fev26.png",
+    logoUrl: "/images/logo-gisele-daviliz.jpg",
     davilizLogoUrl: "https://giselelourenco.com.br/wp-content/uploads/2026/02/Logo-300x279-DaviLiz-19set24-.png",
     videoIntroUrl: "https://giselelourenco.com.br/wp-content/uploads/2026/02/Gisele-Lourenco-Materiais-1-Quem-sou-e-faco-YouTube.mp4",
     officialQuote: "Apenas uma vida que logo passará. Apenas o que for feito para Cristo, durará.",
