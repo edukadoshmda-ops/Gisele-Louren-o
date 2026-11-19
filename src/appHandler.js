@@ -961,6 +961,11 @@ async function handleRequest(req, res) {
       return fs.createReadStream(fullPath).pipe(res);
     }
 
+    // Nunca retornar HTML para rotas /api/* não encontradas
+    if (pathname.startsWith("/api/")) {
+      return sendJson(res, 404, { error: `Rota de API não encontrada: ${pathname}` });
+    }
+
     const indexHtml = path.join(PUBLIC_DIR, "index.html");
     if (fs.existsSync(indexHtml)) {
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });

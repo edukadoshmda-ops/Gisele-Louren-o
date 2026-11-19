@@ -2,7 +2,11 @@
   publish = "public"
   functions = "netlify/functions"
 
+[functions]
+  included_files = ["src/**"]
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
+  force = true
